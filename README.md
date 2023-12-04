@@ -17,7 +17,7 @@ SwiftRison is a Swift encoder/decoder for the [Rison](https://github.com/Nanonid
 
 ## Installation
 
-Integrate SwiftRison into your Xcode project using the URL, `https://github.com/Geotab/mobile-swift-rison`. Or add it to the dependencies value of your `Package.swift`:
+Integrate SwiftRison into your Xcode project using `https://github.com/Geotab/mobile-swift-rison`, or add it to the dependencies value of your `Package.swift`:
 
 ```swift
 dependencies: [
