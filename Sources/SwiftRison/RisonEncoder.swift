@@ -1,18 +1,18 @@
 import Foundation
 
 
-final class RisonEncoder: Encoder {
-    var codingPath: [CodingKey]  = []
-    var userInfo: [CodingUserInfoKey: Any] = [:]
+public final class RisonEncoder: Encoder {
+    public var codingPath: [CodingKey]  = []
+    public var userInfo: [CodingUserInfoKey: Any] = [:]
     
     var rison: Any?
     let mode: RisonMode
     
-    init(mode: RisonMode = .standard) {
+    public init(mode: RisonMode = .standard) {
         self.mode = mode
     }
     
-    func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
+    public func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
         if rison == nil {
             let ref = Reference(RisonObject())
             rison = ref
@@ -27,7 +27,7 @@ final class RisonEncoder: Encoder {
         return KeyedEncodingContainer(container)
     }
     
-    func unkeyedContainer() -> UnkeyedEncodingContainer {
+    public func unkeyedContainer() -> UnkeyedEncodingContainer {
         if rison == nil {
             let ref = Reference(RisonArray())
             rison = ref
@@ -42,14 +42,14 @@ final class RisonEncoder: Encoder {
         return container
     }
     
-    func singleValueContainer() -> SingleValueEncodingContainer {
+    public func singleValueContainer() -> SingleValueEncodingContainer {
         return self
     }
 }
 
 extension RisonEncoder {
     
-    func risonString() -> String {
+    public func risonString() -> String {
         var ret = ""
         if let rison {
             ret = toRisonString(rison)
@@ -97,11 +97,11 @@ extension RisonEncoder {
 
 extension RisonEncoder: SingleValueEncodingContainer {
     
-    func encodeNil() throws {
+    public func encodeNil() throws {
         rison = RisonNil()
     }
     
-    func encode<T>(_ value: T) throws where T : Encodable {
+    public func encode<T>(_ value: T) throws where T : Encodable {
         switch value {
         case let stringValue as String:
             rison = stringValue
