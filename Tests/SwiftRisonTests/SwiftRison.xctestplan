@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "CF64404D-1472-41EE-A11C-84EA92EE9BC3",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwiftRisonTests",
+        "name" : "SwiftRisonTests"
+      }
+    }
+  ],
+  "version" : 1
+}

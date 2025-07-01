@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -12,7 +12,17 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftRison",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .enableUpcomingFeature("ExistentialAny"),
+                .enableUpcomingFeature("InternalImportsByDefault"),
+                .enableUpcomingFeature("DisableOutwardActorInference"),
+                .enableUpcomingFeature("InferSendableFromCaptures"),
+                .enableUpcomingFeature("IsolatedDefaultValues"),
+                .enableUpcomingFeature("BareSlashRegexLiterals"),
+                .enableUpcomingFeature("ForwardTrailingClosures"),
+                .enableUpcomingFeature("ImplicitlyOpenedExistentials"),
+            ]),
         .testTarget(
             name: "SwiftRisonTests",
             dependencies: ["SwiftRison"]),
@@ -21,3 +31,5 @@ let package = Package(
         .v5
     ]
 )
+
+

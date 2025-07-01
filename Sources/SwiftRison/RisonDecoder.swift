@@ -1,7 +1,7 @@
 import Foundation
 
 public final class RisonDecoder: Decoder {
-    public var codingPath: [CodingKey] = []
+    public var codingPath: [any CodingKey] = []
     public var userInfo: [CodingUserInfoKey: Any] = [:]
 
     var risonString: String?
@@ -32,7 +32,7 @@ public final class RisonDecoder: Decoder {
         return KeyedDecodingContainer(container)
     }
 
-    public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
+    public func unkeyedContainer() throws -> any UnkeyedDecodingContainer {
         let rison = try loadRisonValue()
         guard let risonArray = rison as? RisonArray else {
             throw RisonError.invalidArgument
@@ -42,7 +42,7 @@ public final class RisonDecoder: Decoder {
         return container
     }
     
-    public func singleValueContainer() throws -> SingleValueDecodingContainer {
+    public func singleValueContainer() throws -> any SingleValueDecodingContainer {
         let rison = try loadRisonValue()
         let container = RisonSingleValueDecodingContainer(risonValue: rison)
         container.codingPath = codingPath
@@ -67,7 +67,7 @@ public final class RisonDecoder: Decoder {
 
 private class RisonKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
     let risonObject: RisonObject
-    var codingPath: [CodingKey] = []
+    var codingPath: [any CodingKey] = []
     var allKeys: [Key] = []
 
     init(risonObject: RisonObject) {
@@ -94,7 +94,7 @@ private class RisonKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
         return risonValue is RisonNil
     }
     
-    private func decoder(for key: CodingKey) throws -> Decoder {
+    private func decoder(for key: any CodingKey) throws -> any Decoder {
         guard let object = risonObject[key.stringValue] else {
             throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: codingPath, debugDescription: "No parsed value found for key"))
         }
@@ -107,22 +107,22 @@ private class RisonKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
         try decoder(for: key).container(keyedBy: type)
     }
     
-    func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
+    func nestedUnkeyedContainer(forKey key: Key) throws -> any UnkeyedDecodingContainer {
         try decoder(for: key).unkeyedContainer()
     }
     
-    func superDecoder() throws -> Decoder {
+    func superDecoder() throws -> any Decoder {
         try decoder(for: SuperCodingKey())
     }
     
-    func superDecoder(forKey key: Key) throws -> Decoder {
+    func superDecoder(forKey key: Key) throws -> any Decoder {
         try decoder(for: key)
     }
 }
 
 private class RisonUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     
-    var codingPath: [CodingKey] = []
+    var codingPath: [any CodingKey] = []
     let risonArray: RisonArray
 
     var currentIndex: Int = 0
@@ -156,7 +156,7 @@ private class RisonUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         return value
     }
 
-    private func decoderForNextValue() throws -> Decoder {
+    private func decoderForNextValue() throws -> any Decoder {
         guard !isAtEnd else {
             throw DecodingError.valueNotFound(Any.self, DecodingError.Context(codingPath: codingPath, debugDescription: "Past end of container"))
         }
@@ -171,17 +171,17 @@ private class RisonUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         try decoderForNextValue().container(keyedBy: type)
     }
     
-    func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
+    func nestedUnkeyedContainer() throws -> any UnkeyedDecodingContainer {
         try decoderForNextValue().unkeyedContainer()
     }
     
-    func superDecoder() throws -> Decoder {
+    func superDecoder() throws -> any Decoder {
         try decoderForNextValue()
     }
 }
 
 private class RisonSingleValueDecodingContainer: SingleValueDecodingContainer {
-    var codingPath: [CodingKey] = []
+    var codingPath: [any CodingKey] = []
     let risonValue: Any
 
     init(risonValue: Any) {

@@ -2,7 +2,7 @@ import Foundation
 
 
 public final class RisonEncoder: Encoder {
-    public var codingPath: [CodingKey]  = []
+    public var codingPath: [any CodingKey]  = []
     public var userInfo: [CodingUserInfoKey: Any] = [:]
     
     var rison: Any?
@@ -27,7 +27,7 @@ public final class RisonEncoder: Encoder {
         return KeyedEncodingContainer(container)
     }
     
-    public func unkeyedContainer() -> UnkeyedEncodingContainer {
+    public func unkeyedContainer() -> any UnkeyedEncodingContainer {
         if rison == nil {
             let ref = Reference(RisonArray())
             rison = ref
@@ -42,7 +42,7 @@ public final class RisonEncoder: Encoder {
         return container
     }
     
-    public func singleValueContainer() -> SingleValueEncodingContainer {
+    public func singleValueContainer() -> any SingleValueEncodingContainer {
         return self
     }
 }
@@ -138,7 +138,7 @@ extension RisonEncoder: SingleValueEncodingContainer {
 }
 
 private final class RisonKeyedEncoding<Key: CodingKey>: KeyedEncodingContainerProtocol {
-    var codingPath: [CodingKey] = []
+    var codingPath: [any CodingKey] = []
     private var ref: Reference<RisonObject>
     
     init(to ref: Reference<RisonObject>) {
@@ -155,18 +155,18 @@ private final class RisonKeyedEncoding<Key: CodingKey>: KeyedEncodingContainerPr
         ref.value[key.stringValue] = encoder.rison
     }
     
-    private func encoder(for key: CodingKey, rison: Any? = Reference(RisonObject())) -> RisonEncoder {
+    private func encoder(for key: any CodingKey, rison: Any? = Reference(RisonObject())) -> RisonEncoder {
         ref.value[key.stringValue] = rison
         let encoder = RisonEncoder()
         encoder.rison = rison
         return encoder
     }
 
-    func superEncoder() -> Encoder {
+    func superEncoder() -> any Encoder {
         encoder(for: SuperCodingKey())
     }
     
-    func superEncoder(forKey key: Key) -> Encoder {
+    func superEncoder(forKey key: Key) -> any Encoder {
         encoder(for: key)
     }
         
@@ -174,13 +174,13 @@ private final class RisonKeyedEncoding<Key: CodingKey>: KeyedEncodingContainerPr
         encoder(for: key).container(keyedBy: NestedKey.self)
     }
     
-    func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
+    func nestedUnkeyedContainer(forKey key: Key) -> any UnkeyedEncodingContainer {
         encoder(for: key, rison: Reference(RisonArray())).unkeyedContainer()
     }
 }
 
 private final class RisonUnkeyedEncodingContainer: UnkeyedEncodingContainer {
-    var codingPath: [CodingKey] = []
+    var codingPath: [any CodingKey] = []
     var count: Int {
         ref.value.count
     }
@@ -214,18 +214,18 @@ private final class RisonUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         encoder(for: Reference(RisonObject())).container(keyedBy: keyType)
     }
     
-    func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
+    func nestedUnkeyedContainer() -> any UnkeyedEncodingContainer {
         encoder().unkeyedContainer()
     }
     
-    func superEncoder() -> Encoder {
+    func superEncoder() -> any Encoder {
         encoder()
     }
 }
 
 // MARK: - Helpers
 
-private extension NSNumber {
+extension NSNumber {
     func isBoolean() -> Bool {
         CFGetTypeID(self) == CFBooleanGetTypeID()
     }

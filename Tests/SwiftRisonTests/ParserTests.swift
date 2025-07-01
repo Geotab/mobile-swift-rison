@@ -1,3 +1,5 @@
+// swift-format-ignore-file
+
 import XCTest
 @testable import SwiftRison
 

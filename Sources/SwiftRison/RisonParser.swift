@@ -232,7 +232,7 @@ class RisonParser {
 
 // MARK: - Helper extensions
 
-private extension String {
+extension String {
 
     subscript (index: Int) -> String {
         let charIndex = self.index(self.startIndex, offsetBy: index)
