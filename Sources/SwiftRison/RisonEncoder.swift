@@ -88,7 +88,7 @@ extension RisonEncoder {
         case _ as RisonNil:
             return "!n"
         case let string as String:
-            return string
+            return string.escapedForRison()
         default:
             return ""
         }
@@ -228,6 +228,23 @@ private final class RisonUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 extension NSNumber {
     func isBoolean() -> Bool {
         CFGetTypeID(self) == CFBooleanGetTypeID()
+    }
+}
+
+extension String {
+    func escapedForRison() -> String {
+        var result = ""
+        for character in self {
+            switch character {
+            case "'":
+                result.append("!'")
+            case "!":
+                result.append("!!")
+            default:
+                result.append(character)
+            }
+        }        
+        return result
     }
 }
 

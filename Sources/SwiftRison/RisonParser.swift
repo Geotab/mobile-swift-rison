@@ -142,7 +142,7 @@ class RisonParser {
                 var segments: [String] = []
                 var c = ""
                 while c != "'" {
-                    guard i <= self.rison.count else {
+                    guard i < self.rison.count else {
                         throw RisonError.parseEror(message: "unmatched \"'\"")
                     }
                     c = self.rison[i]
@@ -155,6 +155,8 @@ class RisonParser {
                         i += 1
                         if c == "!" || c == "'" {
                             segments.append(c)
+                            // correcting for logic ported from JavaScript
+                            c = self.rison[i]
                         } else {
                             throw RisonError.parseEror(message: "invalid string escape: \"!\(c)\"")
                         }
@@ -165,14 +167,14 @@ class RisonParser {
                     segments.append(self.rison[start..<(i-1)])
                 }
                 self.index = i
-                return segments.count == 1 ? segments[0] : segments.joined(separator: ",")
+                return segments.count == 1 ? segments[0] : segments.joined(separator: "")
             }
             
         case "-", "0"..."9":
             return {
                 var s = self.rison
-                var i = self.index
-                let start = i - 1
+                var i = self.index-1
+                let start = i
                 var state: String? = "int"
                 var permittedSigns = "-"
                 let transitions = [
@@ -183,6 +185,8 @@ class RisonParser {
                 
                 repeat {
                     guard i < s.count else {
+                        // correcting for logic ported from JavaScript, no c = s[i++] in Swift
+                        i += 1
                         break
                     }
                     let c = s[i]
@@ -207,7 +211,7 @@ class RisonParser {
                 }
                 
                 guard let number = NumberFormatter().number(from: s) else {
-                    throw RisonError.parseEror(message: "could not convert \(s) to a numebr")
+                    throw RisonError.parseEror(message: "could not convert \(s) to a number")
                 }
                 
                 return number

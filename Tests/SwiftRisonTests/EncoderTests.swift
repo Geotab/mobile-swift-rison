@@ -66,6 +66,16 @@ final class EncoderTests: XCTestCase {
         XCTAssertEqual(sortedEncodedRison, sortedKeyValuePairs)
     }
     
+    func testEncodeEscapedStrings() throws {
+        let value = "It's a trap!"
+        
+        let encoder = RisonEncoder()
+        try value.encode(to: encoder)
+        let rison = encoder.risonString()
+        
+        XCTAssertEqual(rison, "It!'s a trap!!")
+    }
+    
     func testEncodeNil() throws {
         struct AllTheTypes: Codable {
             var bool: Bool?
