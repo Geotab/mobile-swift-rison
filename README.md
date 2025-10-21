@@ -12,8 +12,8 @@ SwiftRison is a Swift encoder/decoder for the [Rison](https://github.com/Nanonid
 
 ## Requirements
 
-- Xcode 14.1+
-- Swift 5.7+
+- Xcode 15.3+
+- Swift 5.10+
 
 ## Installation
 
